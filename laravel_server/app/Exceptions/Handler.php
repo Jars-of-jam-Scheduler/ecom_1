@@ -4,6 +4,9 @@ namespace App\Exceptions;
 
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Throwable;
+use Psr\Log\LogLevel;
+use AkeneoAccessTokenNotFoundException;
+use AkeneoRefreshTokenNotFoundException;
 
 class Handler extends ExceptionHandler
 {
@@ -13,7 +16,8 @@ class Handler extends ExceptionHandler
      * @var array<class-string<\Throwable>, \Psr\Log\LogLevel::*>
      */
     protected $levels = [
-        //
+		AkeneoAccessTokenNotFoundException::class => LogLevel::CRITICAL,
+		AkeneoRefreshTokenNotFoundException::class => LogLevel::CRITICAL,
     ];
 
     /**

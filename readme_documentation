@@ -34,6 +34,9 @@ This project addresses this problem by providing:
 
 * AsciiDoc for the current documentation you are reading.
 
+[.lead]
+The store's owner's budget being limited, we have decided to install Akeneo on fictitious servers that are slower than those (fictitious) containing Laravel and Elasticsearch, which are queried by the ReactJS application (*i.e.:* by the store's customers).
+
 == Installations
 
 === Docker
@@ -113,7 +116,7 @@ We have defined a `.gitignore` file for:
 
 After having pushed the repository of this project to GitHub using Git and the SSH Github authentication, we have defined these GitHub Actions for, among others, CI/CD purposes:
 
-* @todo
+
 
 === Asana and Agile Kanban method
 
@@ -137,4 +140,14 @@ The instructions to run these softwares can be found in their respective documen
 Without going as far as using the Agile SCRUM method since the team is limited to a single individual "administrator, designer, developer and tester" and because it is a project initiated for a fictitious client and a fictitious problem, we still proceeded with a prototyping and iterations workflow whose tasks were planned in Asana using the Kanban agile method. For example, the communication between Laravel and Akeneo, which relies on Akeneo Webhooks, was done by iterations on the basis of a prototype, which was improved and densified in terms of functionalities at each iteration, in order to reach a version that was always more stable and complete, even "finished" with regard to the project's problem.
 We used this prototyping and iterative workflow for development, but also for systems administration (*i.e.:* handling installation and configuration of softwares), conception, documentation, writing of the Readme, etc.
 
+We prioritized backend development (including data treatment) rather than frontend development.
+
 Of course, Git (commits, branches, tags, etc.) was used to version the project. We made the choice to not create separate GitHub repositories for 1) the ReactJS application and 2) the Laravel server; instead, only one is used. Therefore, we created two main Git branches: one for the ReactJS application, the other for the Laravel server. We did not create the commonly used main Git branches `dev`, `prod` since this project will never (must not) reach the production state.
+
+== Backend development
+
+We have dupplicated some data from Akeneo to Elasticsearch because:
+
+* Akeneo being on a relatively slow server, the users of the ReactJS application should not target Akeneo each time the application queries Laravel, but directly Elasticsearch, which is located in a high performance server containing also Laravel.
+
+* Information on products that change quite often was the object of store's owner's demands. We did not override the code of Akeneo for maintenance reasons: there are not lots of Akeneo developers, whereas Laravel/MySQL/Elasticsearch devops are numerous. Thus, we have decided to extend these products information in the Laravel/MySQL/Elasticsearch stack rather than in Akeneo, which is left unmodified.
