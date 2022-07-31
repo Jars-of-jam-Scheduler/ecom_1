@@ -8,4 +8,6 @@ use Illuminate\Database\Eloquent\Model;
 class AkeneoProduct extends Model
 {
     use HasFactory;
+	protected $primaryKey = 'reference';
+	public $incrementing = FALSE;
 }

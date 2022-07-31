@@ -14,8 +14,12 @@ return new class extends Migration
     public function up()
     {
         Schema::create('akeneo_products', function (Blueprint $table) {
-            $table->id();
             $table->timestamps();
+
+			$table->string('code')->comment('Akeneo identifier');
+			$table->string('reference')->primary();
+			$table->text('name');
+			$table->text('description');
         });
     }
 

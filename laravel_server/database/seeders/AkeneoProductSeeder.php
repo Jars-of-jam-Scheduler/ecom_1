@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use \App\Models\AkeneoProduct;
 
 class AkeneoProductSeeder extends Seeder
 {
@@ -14,6 +15,8 @@ class AkeneoProductSeeder extends Seeder
      */
     public function run()
     {
-        //
+		AkeneoProduct::factory()
+		->count(50)
+		->create();
     }
 }
