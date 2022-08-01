@@ -20,7 +20,7 @@ class AkeneoProductFactory extends Factory
         return [
             'reference' => Str::random(5),
             'code' => fake()->unique()->lexify('REF-????'),
-			'description' => fake()->paragraph(),
+			'description' => fake()->optional()->paragraph(),
 			'name' => fake()->word(),
         ];
     }

@@ -19,7 +19,7 @@ return new class extends Migration
 			$table->string('code')->comment('Akeneo identifier');
 			$table->string('reference')->primary();
 			$table->text('name');
-			$table->text('description');
+			$table->text('description')->nullable();
         });
     }
 
