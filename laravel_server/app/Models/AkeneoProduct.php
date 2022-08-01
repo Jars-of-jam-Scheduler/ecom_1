@@ -10,4 +10,5 @@ class AkeneoProduct extends Model
     use HasFactory;
 	protected $primaryKey = 'reference';
 	public $incrementing = FALSE;
+	protected $keyType = 'string';
 }
