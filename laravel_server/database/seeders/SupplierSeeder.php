@@ -4,19 +4,19 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use \App\Models\Supplier;
 
-class DatabaseSeeder extends Seeder
+class SupplierSeeder extends Seeder
 {
     /**
-     * Seed the application's database.
+     * Run the database seeds.
      *
      * @return void
      */
     public function run()
     {
-		$this->call([
-			AkeneoProductSeeder::class,
-			SupplierSeeder::class
-		]);
+        Supplier::factory()
+		->count(50)
+		->create();
     }
 }
