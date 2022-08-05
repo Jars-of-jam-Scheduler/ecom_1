@@ -4,8 +4,10 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 use App\Models\AkeneoProduct;
+use App\Models\Supplier;
 use App\Http\Resources\AkeneoProductResource;
 use App\Http\Resources\AkeneoProductCollection;
+use App\Http\Resources\SupplierResource;
 
 /*
 |--------------------------------------------------------------------------
@@ -27,5 +29,9 @@ Route::get('/get_akeneo_product/{reference}', function($reference) {
 });
 
 Route::get('/get_akeneo_products', function() {
-	return new AkeneoProductCollection(AkeneoProduct::paginate());
+	return new AkeneoProductCollection(AkeneoProduct::with('suppliers')->paginate());
+});
+
+Route::get('/get_suppliers', function() {
+	return SupplierResource::collection(Supplier::with('akeneoProducts')->paginate());
 });

@@ -4,7 +4,7 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class AkeneoProductResource extends JsonResource
+class SupplierResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -15,11 +15,10 @@ class AkeneoProductResource extends JsonResource
     public function toArray($request)
     {
         return [
-			'reference' => $this->reference, 
 			'name' => $this->name,
-			'description' => $this->whenNotNull($this->description),
+			'id' => $this->id,
 
-			'suppliers' => SupplierResource::collection($this->whenLoaded('suppliers')),
+			'akeneo_products' => AkeneoProductResource::collection($this->whenLoaded('akeneoProducts')),
 
 			'created_at' => $this->whenPivotLoaded('akeneo_product_supplier', fn() => $this->pivot->created_at),
 			'expires_at' => $this->whenPivotLoaded('akeneo_product_supplier', fn() => $this->pivot->expires_at)

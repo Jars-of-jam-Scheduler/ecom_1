@@ -11,4 +11,8 @@ class AkeneoProduct extends Model
 	protected $primaryKey = 'reference';
 	public $incrementing = FALSE;
 	protected $keyType = 'string';
+
+	public function suppliers() {
+		return $this->belongsToMany(Supplier::class)->withTimestamps()->withPivot('expires_at');
+	}
 }
