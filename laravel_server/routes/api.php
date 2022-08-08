@@ -25,7 +25,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::get('/get_akeneo_product/{reference}', function($reference) {
-	return new AkeneoProductResource(AkeneoProduct::findOrFail($reference));
+	return new AkeneoProductResource(AkeneoProduct::with('suppliers')->findOrFail($reference));
 });
 
 Route::get('/get_akeneo_products', function() {
@@ -34,4 +34,8 @@ Route::get('/get_akeneo_products', function() {
 
 Route::get('/get_suppliers', function() {
 	return SupplierResource::collection(Supplier::with('akeneoProducts')->paginate());
+});
+
+Route::get('/get_supplier/{id}', function($id) {
+	return new SupplierResource(Supplier::with('akeneoProducts')->findOrFail($id));
 });

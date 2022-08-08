@@ -22,7 +22,15 @@ class AkeneoProductResource extends JsonResource
 			'suppliers' => SupplierResource::collection($this->whenLoaded('suppliers')),
 
 			'created_at' => $this->whenPivotLoaded('akeneo_product_supplier', fn() => $this->pivot->created_at),
-			'expires_at' => $this->whenPivotLoaded('akeneo_product_supplier', fn() => $this->pivot->expires_at)
+			'expires_at' => $this->whenPivotLoaded('akeneo_product_supplier', fn() => $this->pivot->expires_at),
 		];
     }
+
+	public function with($request) {
+		return [
+			'response_timing' => [
+				'datetime' => now()
+			]
+		];
+	}
 }

@@ -24,4 +24,5 @@ class SupplierResource extends JsonResource
 			'expires_at' => $this->whenPivotLoaded('akeneo_product_supplier', fn() => $this->pivot->expires_at)
 		];
     }
+
 }
