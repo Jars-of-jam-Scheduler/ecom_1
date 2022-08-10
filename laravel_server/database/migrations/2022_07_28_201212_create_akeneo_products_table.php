@@ -20,6 +20,8 @@ return new class extends Migration
 			$table->string('reference')->primary();
 			$table->text('name');
 			$table->text('description')->nullable();
+			$table->float('price_with_taxes');
+			$table->enum('type', ['simple_product', 'service']);
         });
     }
 

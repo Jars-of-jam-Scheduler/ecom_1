@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 use App\Models\AkeneoProduct;
+use App\Models\Service;
 use App\Models\Supplier;
 use App\Http\Resources\AkeneoProductResource;
 use App\Http\Resources\AkeneoProductCollection;
@@ -30,6 +31,14 @@ Route::get('/get_akeneo_product/{reference}', function($reference) {
 
 Route::get('/get_akeneo_products', function() {
 	return new AkeneoProductCollection(AkeneoProduct::with('suppliers')->paginate());
+});
+
+Route::get('/get_service/{reference}', function($reference) {
+	return new AkeneoProductResource(Service::with('suppliers')->findOrFail($reference));
+});
+
+Route::get('/get_services', function() {
+	return new AkeneoProductCollection(Service::with('suppliers')->paginate());
 });
 
 Route::get('/get_suppliers', function() {
