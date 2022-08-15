@@ -10,6 +10,10 @@ use App\Http\Resources\AkeneoProductResource;
 use App\Http\Resources\AkeneoProductCollection;
 use App\Http\Resources\SupplierResource;
 
+use App\Providers\AskForAkeneoSynchronization;
+
+use App\Http\Controllers\Test;
+
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -48,3 +52,11 @@ Route::get('/get_suppliers', function() {
 Route::get('/get_supplier/{id}', function($id) {
 	return new SupplierResource(Supplier::with('akeneoProducts')->findOrFail($id));
 });
+
+Route::post('/synchronize_with_akeneo', function() {
+	AskForAkeneoSynchronization::dispatch();
+});
+
+Route::post('/test',  [Test::class, 'test']);
+
+Route::post('/test2', [Test::class, 'test2']);

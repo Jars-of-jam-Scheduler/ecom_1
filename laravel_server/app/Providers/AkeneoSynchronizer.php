@@ -1,45 +1,57 @@
 <?php
-namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+namespace App\Providers;
+
+use App\Providers\AskForAkeneoSynchronization;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Support\Facades\Storage;
 
-use App\Exceptions\AkeneoQueryProblemException;
-use App\Exceptions\AkeneoQueryUnknownProblemException;
-use App\Models\AkeneoProduct;
+use \App\Models\AkeneoProduct;
 
-class Test extends Controller
+class AkeneoSynchronizer implements ShouldQueue
 {
 	use \App\Http\Traits\AkeneoConnector;
-    
-	function test() {
 
-		// try {
-			$response = $this->getFromAkeneo(config('akeneo.connections.rest_api.endpoint') . '/products', [
-				'pagination_type' => 'search_after',
-				'limit' => 100
+	/**
+     * The name of the connection the job should be sent to.
+     *
+     * @var string|null
+     */
+    public $connection = 'database';
+ 
+    /**
+     * The name of the queue the job should be sent to.
+     *
+     * @var string|null
+     */
+    public $queue = 'default';
 
-			], function($query_result) {
+	/**
+     * The number of times the queued listener may be attempted.
+     *
+     * @var int
+     */
+    public $tries = 3;
 
-				do {
+    /**
+     * Create the event listener.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        //
+    }
 
-					$response_as_object = $query_result->object();
-					var_dump($response_as_object->_links);
-					exit;
-					
-				} while(
-					property_exists($response_as_object->_links, 'next') && $query_result = $this->getFromAkeneo($response_as_object->_links->next->href)
-				);
-
-			});
-	
-		// } catch(AkeneoQueryUnknownProblemException | AkeneoQueryProblemException $e) {
-		// 	echo $e->getMessage();
-		// }
-
-	}
-
-	function test2() {
+    /**
+     * Handle the event.
+     *
+     * @param  \App\Providers\AskForAkeneoSynchronization  $event
+     * @return void
+     */
+    public function handle(AskForAkeneoSynchronization $event)
+    {
 		$akeneo_products_to_insert_or_update = [];
 
         $result = $this->getFromAkeneo(config('akeneo.connections.rest_api.endpoint') . '/products', [
@@ -66,6 +78,18 @@ class Test extends Controller
 			);
 
 		});
-	}
-    
+
+    }
+
+	/**
+     * Handle a job failure.
+     *
+     * @param  \App\Events\AskForAkeneoSynchronization  $event
+     * @param  \Throwable  $exception
+     * @return void
+     */
+    public function failed(AskForAkeneoSynchronization $event, $exception)
+    {
+        report($exception);
+    }
 }

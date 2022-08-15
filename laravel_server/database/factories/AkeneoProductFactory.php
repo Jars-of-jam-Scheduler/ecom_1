@@ -22,7 +22,7 @@ class AkeneoProductFactory extends Factory
             'code' => fake()->unique()->lexify('REF-????'),
 			'description' => fake()->optional()->paragraph(),
 			'name' => fake()->word(),
-			'price_with_taxes' => fake()->randomFloat(2, 5, 10000),
+			'price_with_taxes' => fake()->optional()->randomFloat(2, 5, 10000),
 			'type' => fake()->randomElement(['simple_product', 'service'])
         ];
     }

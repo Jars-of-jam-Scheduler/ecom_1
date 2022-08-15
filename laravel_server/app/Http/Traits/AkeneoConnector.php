@@ -5,7 +5,8 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Http;
 use Carbon\Carbon;
 
-use App\Exceptions\AkeneoTokenNotFoundException;
+use App\Exceptions\AkeneoQueryProblemException;
+use App\Exceptions\AkeneoQueryUnknownProblemException;
 
 trait AkeneoConnector {
 
@@ -52,27 +53,33 @@ trait AkeneoConnector {
 
 		}
 		catch(\Illuminate\Http\Client\RequestException | \Illuminate\Http\Client\ConnectionException $e) {
+			$error_code = 500;
+			$error_message = __('akeneo.errors.connection_problem');
+
 			if($e instanceof \Illuminate\Http\Client\RequestException) {
 				switch($e->response->status()) {
 					case 403:
-						echo __('akeneo.errors.forbidden');
+						$error_code = 403;
+						$error_message = __('akeneo.errors.forbidden');
 						break;
 					case 404:
-						echo __('akeneo.errors.not_found');
+						$error_code = 404;
+						$error_message = __('akeneo.errors.not_found');
 						break;
 					case 429:
-						echo __('akeneo.errors.too_many_requests');
+						$error_code = 429;
+						$error_message = __('akeneo.errors.too_many_requests');
 						break;
 				}
 			}
-			
-			echo __('akeneo.errors.connection_problem');
-			report($e);
+
+			report($e);  // In an outside-jobs execution context, top-catching these (important) exceptions could prevent them from being reported
+			throw new AkeneoQueryProblemException($error_message, $error_code, $e);
 
 		}
 		catch(\League\Flysystem\UnableToWriteFile | \Exception $e) {
-			echo __('akeneo.errors.unable_to_query_unknown_reason');
 			report($e);
+			throw new AkeneoQueryUnknownProblemException(__('unable_to_query_unknown_reason'), 500, $e);
 		}
 
 		return $query_result;

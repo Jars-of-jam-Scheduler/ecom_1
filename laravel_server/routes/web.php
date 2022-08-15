@@ -20,10 +20,3 @@ use Illuminate\Support\Facades\Http;
 Route::get('/', function () {
     return view('welcome');
 });
-
-Route::post('/receive_akeneo_events', function() {
-	Storage::put('akeneo_data_test.txt', 'test');
-
-});
-
-Route::get('/test', [Test::class, 'test']);

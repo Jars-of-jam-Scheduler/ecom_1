@@ -18,9 +18,9 @@ return new class extends Migration
 
 			$table->string('code')->comment('Akeneo identifier');
 			$table->string('reference')->primary();
-			$table->text('name');
+			$table->text('name')->nullable();
 			$table->text('description')->nullable();
-			$table->float('price_with_taxes');
+			$table->float('price_with_taxes')->nullable();
 			$table->enum('type', ['simple_product', 'service']);
         });
     }
