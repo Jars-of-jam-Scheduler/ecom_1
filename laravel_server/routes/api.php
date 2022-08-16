@@ -10,9 +10,9 @@ use App\Http\Resources\AkeneoProductResource;
 use App\Http\Resources\AkeneoProductCollection;
 use App\Http\Resources\SupplierResource;
 
-use App\Providers\AskForAkeneoSynchronization;
-
 use App\Http\Controllers\Test;
+
+use App\Jobs\SynchronizeAkeneo;
 
 /*
 |--------------------------------------------------------------------------
@@ -54,7 +54,7 @@ Route::get('/get_supplier/{id}', function($id) {
 });
 
 Route::post('/synchronize_with_akeneo', function() {
-	AskForAkeneoSynchronization::dispatch();
+	SynchronizeAkeneo::dispatch();
 });
 
 Route::post('/test',  [Test::class, 'test']);
