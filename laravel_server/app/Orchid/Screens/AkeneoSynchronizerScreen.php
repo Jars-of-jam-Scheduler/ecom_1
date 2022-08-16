@@ -7,7 +7,7 @@ use Orchid\Screen\Actions\Button;
 use Orchid\Support\Facades\Layout;
 use Orchid\Support\Facades\Alert;
 
-use App\Providers\AskForAkeneoSynchronization;
+use App\Jobs\SynchronizeAkeneo;
 
 class AkeneoSynchronizerScreen extends Screen
 {
@@ -66,7 +66,7 @@ class AkeneoSynchronizerScreen extends Screen
 
     public function synchronizeWithAkeneo()
     {
-		AskForAkeneoSynchronization::dispatch();
+		SynchronizeAkeneo::dispatch();
         Alert::info('Synchro is asked.');
     }
 
