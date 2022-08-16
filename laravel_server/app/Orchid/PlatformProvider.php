@@ -93,6 +93,9 @@ class PlatformProvider extends OrchidServiceProvider
                 ->icon('lock')
                 ->route('platform.systems.roles')
                 ->permission('platform.systems.roles'),
+
+				Menu::make('Akeneo Synchronizer')
+                ->route('platform.akeneo_synchronizer'),
         ];
     }
 

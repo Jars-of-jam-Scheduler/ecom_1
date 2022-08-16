@@ -18,6 +18,8 @@ use App\Orchid\Screens\User\UserProfileScreen;
 use Illuminate\Support\Facades\Route;
 use Tabuna\Breadcrumbs\Trail;
 
+use App\Orchid\Screens\AkeneoSynchronizerScreen;
+
 /*
 |--------------------------------------------------------------------------
 | Dashboard Routes
@@ -113,3 +115,5 @@ Route::screen('example-cards', ExampleCardsScreen::class)->name('platform.exampl
 Route::screen('example-advanced', ExampleFieldsAdvancedScreen::class)->name('platform.example.advanced');
 
 //Route::screen('idea', Idea::class, 'platform.screens.idea');
+
+Route::screen('akeneo_synchronizer', AkeneoSynchronizerScreen::class)->name('platform.akeneo_synchronizer');

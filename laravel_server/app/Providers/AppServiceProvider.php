@@ -4,6 +4,10 @@ namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
 
+use Illuminate\Support\Facades\Queue;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Queue\Events\JobProcessed;
+
 class AppServiceProvider extends ServiceProvider
 {
     /**
@@ -23,6 +27,5 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //
     }
 }
