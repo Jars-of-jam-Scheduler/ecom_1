@@ -8,6 +8,9 @@ use App\Exceptions\AkeneoQueryProblemException;
 use App\Exceptions\AkeneoQueryUnknownProblemException;
 use App\Models\AkeneoProduct;
 
+use App\Notifications\AkeneoSynchronized;
+use App\Models\User;
+
 class Test extends Controller
 {
 	use \App\Http\Traits\AkeneoConnector;
@@ -66,6 +69,9 @@ class Test extends Controller
 			);
 
 		});
+
+		$user = User::find(1);
+		$user->notify(new AkeneoSynchronized());
 	}
     
 }

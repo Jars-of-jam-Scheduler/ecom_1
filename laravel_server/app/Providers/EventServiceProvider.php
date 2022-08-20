@@ -18,10 +18,6 @@ class EventServiceProvider extends ServiceProvider
         Registered::class => [
             SendEmailVerificationNotification::class,
         ],
-
-		AskForAkeneoSynchronization::class => [
-			AkeneoSynchronizer::class
-		]
     ];
 
     /**

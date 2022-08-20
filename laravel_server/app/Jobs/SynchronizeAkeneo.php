@@ -8,27 +8,17 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Throwable;
 
-use App\Providers\AskForAkeneoSynchronization;
+use App\Models\User;
+use App\Models\AkeneoProduct;
+use App\Notifications\AkeneoSynchronized;
+use App\Notifications\AkeneoFailedToSynchronize;
 
 class SynchronizeAkeneo implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 	use \App\Http\Traits\AkeneoConnector;
-
-	/**
-     * The name of the connection the job should be sent to.
-     *
-     * @var string|null
-     */
-    public $connection = 'database';
- 
-    /**
-     * The name of the queue the job should be sent to.
-     *
-     * @var string|null
-     */
-    public $queue = 'default';
 
 	/**
      * The number of times the queued listener may be attempted.
@@ -44,7 +34,8 @@ class SynchronizeAkeneo implements ShouldQueue
      */
     public function __construct()
     {
-        //
+        $this->onQueue('default');
+        $this->onConnection('database');
     }
 
     /**
@@ -81,18 +72,20 @@ class SynchronizeAkeneo implements ShouldQueue
 
 		});
 
-		AskForAkeneoSynchronization::dispatch();
+		$user = User::find(1);
+		$user->notify(new AkeneoSynchronized());
     }
 
 	/**
      * Handle a job failure.
      *
-     * @param  \App\Events\AskForAkeneoSynchronization  $event
      * @param  \Throwable  $exception
      * @return void
      */
-    public function failed(AskForAkeneoSynchronization $event, $exception)
+    public function failed(Throwable $exception)
     {
+		$user = User::find(1);
+		$user->notify(new AkeneoFailedToSynchronize());
         report($exception);
     }
 }

@@ -4,8 +4,12 @@ namespace App\Models;
 
 use Orchid\Platform\Models\User as Authenticatable;
 
+use NotificationChannels\WebPush\HasPushSubscriptions;
+
 class User extends Authenticatable
 {
+	use HasPushSubscriptions;
+
     /**
      * The attributes that are mass assignable.
      *

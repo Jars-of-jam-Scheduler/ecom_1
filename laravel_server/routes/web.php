@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Controllers\Test;
+use App\Http\Controllers\WebPushController;
 
 use Illuminate\Support\Facades\Http;
 
@@ -20,3 +21,5 @@ use Illuminate\Support\Facades\Http;
 Route::get('/', function () {
     return view('welcome');
 });
+
+Route::post('/webpush_notification_pushsubscription', [WebPushController::class, 'pushSubscription']);

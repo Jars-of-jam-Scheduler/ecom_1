@@ -67,7 +67,7 @@ class AkeneoSynchronizerScreen extends Screen
     public function synchronizeWithAkeneo()
     {
 		SynchronizeAkeneo::dispatch();
-        Alert::info('Synchro is asked.');
+        Alert::info('The synchronization has been started. You will be notified by mail and in your browser when it is complete.');
     }
 
 }
