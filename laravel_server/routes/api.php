@@ -11,6 +11,7 @@ use App\Http\Resources\AkeneoProductCollection;
 use App\Http\Resources\SupplierResource;
 
 use App\Http\Controllers\Test;
+use App\Http\Controllers\Searcher;
 
 use App\Jobs\SynchronizeAkeneo;
 
@@ -60,3 +61,5 @@ Route::post('/synchronize_with_akeneo', function() {
 Route::post('/test',  [Test::class, 'test']);
 
 Route::post('/test2', [Test::class, 'test2']);
+
+Route::get('search', [Searcher::class, 'search']);
