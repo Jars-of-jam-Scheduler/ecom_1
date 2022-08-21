@@ -79,7 +79,7 @@ trait AkeneoConnector {
 		}
 		catch(\League\Flysystem\UnableToWriteFile | \Exception $e) {
 			report($e);
-			throw new AkeneoQueryUnknownProblemException(__('unable_to_query_unknown_reason'), 500, $e);
+			throw new AkeneoQueryUnknownProblemException(__('akeneo.errors.unable_to_query_unknown_reason'), 500, $e);
 		}
 
 		return $query_result;
