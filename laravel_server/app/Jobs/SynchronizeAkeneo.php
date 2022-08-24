@@ -19,6 +19,7 @@ class SynchronizeAkeneo implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 	use \App\Http\Traits\AkeneoConnector;
+	use \App\Http\Traits\ElasticsearchConnector;
 
 	/**
      * The number of times the queued listener may be attempted.
@@ -46,12 +47,13 @@ class SynchronizeAkeneo implements ShouldQueue
     public function handle()
     {
 		$akeneo_products_to_insert_or_update = [];
+		$elasticsearch_products_to_insert_or_update = "";
 
         $result = $this->getFromAkeneo(config('akeneo.connections.rest_api.endpoint') . '/products', [
 			'pagination_type' => 'search_after',
 			'limit' => 100
 
-		], function($query_result) {
+		], function($query_result) use ($elasticsearch_products_to_insert_or_update) {
 
 			do {
 				$response_as_object = $query_result->object();
@@ -63,8 +65,20 @@ class SynchronizeAkeneo implements ShouldQueue
 					'description' => property_exists($akeneo_product->values, 'description') ? $akeneo_product->values->description[0]->data : NULL, 
 					'type' => property_exists($akeneo_product->values, 'name') && str_contains(strtolower($akeneo_product->values->name[0]->data), 'system') ? 'service' : 'simple_product'
 				], $response_as_object->_embedded->items);
-
 				AkeneoProduct::upsert($akeneo_products_to_insert_or_update, ['reference'], ['name', 'description', 'type']);
+
+				foreach($response_as_object->_embedded->items as $akeneo_product) {
+					$elasticsearch_products_to_insert_or_update .= "{\"index\": {}}\n";
+					$elasticsearch_products_to_insert_or_update .= json_encode([
+							'code' => $akeneo_product->identifier, 
+							'reference' => $akeneo_product->identifier, 
+							'name' => property_exists($akeneo_product->values, 'name') ? $akeneo_product->values->name[0]->data : NULL,
+							'description' => property_exists($akeneo_product->values, 'description') ? $akeneo_product->values->description[0]->data : NULL, 
+							'type' => property_exists($akeneo_product->values, 'name') && str_contains(strtolower($akeneo_product->values->name[0]->data), 'system') ? 'service' : 'simple_product'
+						]) . "\n";
+				}
+				$this->queryElasticsearch('post', config('elasticsearch.connections.rest_api.endpoint') . '/products/_bulk?pretty', $elasticsearch_products_to_insert_or_update);
+
 				
 			} while(
 				property_exists($response_as_object->_links, 'next') && $query_result = $this->getFromAkeneo($response_as_object->_links->next->href)

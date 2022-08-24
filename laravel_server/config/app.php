@@ -156,6 +156,8 @@ return [
 
     'providers' => [
 
+		App\Providers\GuzzleClientServiceProvider::class,
+		
         /*
          * Laravel Framework Service Providers...
          */

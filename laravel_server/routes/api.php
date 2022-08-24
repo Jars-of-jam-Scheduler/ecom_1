@@ -62,4 +62,6 @@ Route::post('/test',  [Test::class, 'test']);
 
 Route::post('/test2', [Test::class, 'test2']);
 
+Route::get('/test_fill_elastic_search', [Test::class, 'test_fill_elastic_search']);
+
 Route::get('search', [Searcher::class, 'search']);

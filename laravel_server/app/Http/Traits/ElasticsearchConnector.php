@@ -4,17 +4,30 @@ namespace App\Http\Traits;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Http;
 use Carbon\Carbon;
+use GuzzleHttp\Client;
+
+use App\Exceptions\ElasticsearchQueryProblemException;
+use App\Exceptions\ElasticsearchQueryUnknownProblemException;
 
 trait ElasticsearchConnector {
 
-	private function getFromElasticsearch($request_uri, $data = NULL, $delegated_function = NULL) {
-
+	function queryElasticsearch($method_type, $request_uri, $data = NULL, $delegated_function = NULL) {
 		$query_result = NULL;
 
 		try {
-			$query_result = Http::withOptions([
-				'verify' => FALSE,
-			])->withBasicAuth(config('elasticsearch.authentication.client_id'), config('elasticsearch.authentication.secret'))->get($request_uri)->throw();
+			$client = new Client([
+				'base_uri'  => config('elasticsearch.connections.rest_api.endpoint'),
+				'verify'    => FALSE,
+				'auth' => [config('elasticsearch.authentication.client_id'), config('elasticsearch.authentication.secret')]
+			]);
+			$request = $client->$method_type($request_uri, [
+				'headers' => [
+					'accept' =>  'application/json',
+					'Content-Type' =>  'application/json',
+				],
+				'body' => $data
+			]);
+			$query_result = json_decode((string) $request->getBody());
 		
 			if(isset($delegated_function)) {
 				$delegated_function($query_result);
