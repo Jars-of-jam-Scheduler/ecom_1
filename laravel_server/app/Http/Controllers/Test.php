@@ -75,7 +75,78 @@ class Test extends Controller
 		$user->notify(new AkeneoSynchronized());
 	}
 
-	function test_fill_elastic_search() {
+	function createEcom1ElasticsearchIndex() {
+		return $this->queryElasticsearch('put', config('elasticsearch.connections.rest_api.endpoint') . '/ecom_1', 
+		'
+		{
+			"settings": {
+			  "analysis": {
+				"filter": {
+				  "french_elision": {
+					"type": "elision",
+					"articles_case": true,
+					"articles": ["l", "m", "t", "qu", "n", "s", "j", "d", "c", "jusqu", "quoiqu", "lorsqu", "puisqu"]
+				  },
+				  "french_synonym": {
+					"type": "synonym",
+					"ignore_case": true,
+					"expand": true,
+					"synonyms": [
+					  "salade, laitue",
+					  "mayo, mayonnaise",
+					  "grille, toaste"
+					]
+				  },
+				  "french_stemmer": {
+					"type": "stemmer",
+					"language": "light_french"
+				  }
+				},
+				"analyzer": {
+				  "french_heavy": {
+					"tokenizer": "icu_tokenizer",
+					"filter": [
+					  "french_elision",
+					  "icu_folding",
+					  "french_synonym",
+					  "french_stemmer"
+					]
+				  },
+				  "french_light": {
+					"tokenizer": "icu_tokenizer",
+					"filter": [
+					  "french_elision",
+					  "icu_folding"
+					]
+				  }
+				}
+			  }
+			}
+		  }		
+		');
+	}
+
+	function createElasticsearchIndexMapping() {
+		return $this->queryElasticsearch('put', config('elasticsearch.connections.rest_api.endpoint') . '/ecom_1/_mapping', 
+		'
+		{
+			  "properties": {
+				"description": {
+				  "type": "text",
+				  "analyzer": "french_light",
+				  "fields": {
+					"stemmed": {
+					  "type": "text",
+					  "analyzer": "french_heavy"
+					}
+				  }
+				}
+			  }
+		}
+		');
+	}
+
+	function testFillElasticSearch() {
 		$data_for_elasticsearch = '';
 		foreach(AkeneoProduct::all() as $akeneo_product) {
 			$data_for_elasticsearch .= "{\"index\": {}}\n";
@@ -83,11 +154,12 @@ class Test extends Controller
 					'code' => $akeneo_product->code, 
 					'reference' => $akeneo_product->reference, 
 					'name' => $akeneo_product->name, 
-					'type' => $akeneo_product->type
+					'type' => $akeneo_product->type,
+					'description' => $akeneo_product->description,
 				]) . "\n";
 		}
 
-		$res = $this->queryElasticsearch('post', config('elasticsearch.connections.rest_api.endpoint') . '/products/_bulk?pretty', $data_for_elasticsearch);
+		$res = $this->queryElasticsearch('post', config('elasticsearch.connections.rest_api.endpoint') . '/ecom_1/_bulk?pretty', $data_for_elasticsearch);
 		var_dump($res);
 		
 	}

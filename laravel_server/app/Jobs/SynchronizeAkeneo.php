@@ -77,7 +77,7 @@ class SynchronizeAkeneo implements ShouldQueue
 							'type' => property_exists($akeneo_product->values, 'name') && str_contains(strtolower($akeneo_product->values->name[0]->data), 'system') ? 'service' : 'simple_product'
 						]) . "\n";
 				}
-				$this->queryElasticsearch('post', config('elasticsearch.connections.rest_api.endpoint') . '/products/_bulk?pretty', $elasticsearch_products_to_insert_or_update);
+				$this->queryElasticsearch('post', config('elasticsearch.connections.rest_api.endpoint') . '/ecom_1/_bulk?pretty', $elasticsearch_products_to_insert_or_update);
 
 				
 			} while(

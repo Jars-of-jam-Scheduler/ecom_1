@@ -62,6 +62,10 @@ Route::post('/test',  [Test::class, 'test']);
 
 Route::post('/test2', [Test::class, 'test2']);
 
-Route::get('/test_fill_elastic_search', [Test::class, 'test_fill_elastic_search']);
+Route::post('/create_ecom1_elasticsearch_index', [Test::class, 'createEcom1ElasticsearchIndex']);
+Route::post('/create_ecom1_elasticsearch_index_mapping', [Test::class, 'createElasticsearchIndexMapping']);
 
-Route::get('search', [Searcher::class, 'search']);
+Route::post('/test_fill_elastic_search', [Test::class, 'testFillElasticSearch']);
+
+Route::get('search_all', [Searcher::class, 'searchAll']);
+Route::get('search_by_description', [Searcher::class, 'searchByDescription']);
